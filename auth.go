@@ -259,9 +259,9 @@ func (a *Auth) InviteUserByEmail(ctx context.Context, email string) (*User, erro
 }
 
 // InviteUserByEmail sends an invite link to the given email. Returns a user.
-func (a *Auth) DeleteUser(ctx context.Context, email string) (*User, error) {
-	reqBody, _ := json.Marshal(map[string]string{"email": email})
-	reqURL := fmt.Sprintf("%s/%s/invite", a.client.BaseURL, AuthEndpoint)
+func (a *Auth) DeleteUser(ctx context.Context, id string) (*User, error) {
+	reqBody, _ := json.Marshal(map[string]string{"should_soft_delete": "false"})
+	reqURL := fmt.Sprintf("%s/%s/admin/users/%s", a.client.BaseURL, AuthEndpoint, id)
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, reqURL, bytes.NewBuffer(reqBody))
 	if err != nil {
 		return nil, err
