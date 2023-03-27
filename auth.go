@@ -257,3 +257,22 @@ func (a *Auth) InviteUserByEmail(ctx context.Context, email string) (*User, erro
 
 	return &res, nil
 }
+
+// InviteUserByEmail sends an invite link to the given email. Returns a user.
+func (a *Auth) DeleteUser(ctx context.Context, email string) (*User, error) {
+	reqBody, _ := json.Marshal(map[string]string{"email": email})
+	reqURL := fmt.Sprintf("%s/%s/invite", a.client.BaseURL, AuthEndpoint)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, reqURL, bytes.NewBuffer(reqBody))
+	if err != nil {
+		return nil, err
+	}
+
+	injectAuthorizationHeader(req, a.client.apiKey)
+	req.Header.Set("Content-Type", "application/json")
+	res := User{}
+	if err := a.client.sendRequest(req, &res); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
