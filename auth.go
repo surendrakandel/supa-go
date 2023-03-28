@@ -268,7 +268,7 @@ func (a *Auth) DeleteUser(ctx context.Context, id string) (*User, error) {
 		return nil, err
 	}
 
-	injectAuthorizationHeader(req, a.client.apiKey)
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", a.client.apiKey))
 	req.Header.Set("Content-Type", "application/json")
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
