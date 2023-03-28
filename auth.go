@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -269,10 +270,15 @@ func (a *Auth) DeleteUser(ctx context.Context, id string) (*User, error) {
 
 	injectAuthorizationHeader(req, a.client.apiKey)
 	req.Header.Set("Content-Type", "application/json")
-	res := User{}
-	if err := a.client.sendRequest(req, &res); err != nil {
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
 		return nil, err
 	}
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(string(body))
 
-	return &res, nil
+	return nil, nil
 }
